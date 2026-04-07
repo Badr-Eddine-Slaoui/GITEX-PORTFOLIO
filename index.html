@@ -9,154 +9,651 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome (CDN only, remove kit) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
 
   <!-- DevIcons -->
-  
-  <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-          
-
-  <!-- FontAwesome -->
-  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
   <style>
-    body { font-family: 'Poppins', sans-serif; }
-
-    .glass {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.1);
+    :root {
+      --bg-deep: #040b17;
+      --bg-mid: #0b1a31;
+      --bg-soft: #12294c;
+      --accent: #22d3ee;
+      --accent-strong: #60a5fa;
+      --text-main: #e6eef9;
+      --text-soft: #a1b5cc;
+      --panel: rgba(10, 23, 43, 0.66);
+      --panel-border: rgba(255, 255, 255, 0.14);
     }
 
-    .glow:hover {
-      box-shadow: 0 0 20px rgba(168,85,247,0.6);
-      transform: translateY(-3px) scale(1.03);
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(34, 211, 238, 0.24), transparent 34%),
+        radial-gradient(circle at 88% 14%, rgba(96, 165, 250, 0.22), transparent 30%),
+        radial-gradient(circle at 52% 100%, rgba(9, 74, 116, 0.42), transparent 38%),
+        linear-gradient(145deg, var(--bg-deep), var(--bg-mid) 48%, var(--bg-soft));
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: 9999px;
+      filter: blur(35px);
+      opacity: 0.55;
+      animation: floatBlob 13s ease-in-out infinite;
+    }
+
+    body::before {
+      width: 240px;
+      height: 240px;
+      top: 8%;
+      left: -70px;
+      background: rgba(34, 211, 238, 0.28);
+    }
+
+    body::after {
+      width: 300px;
+      height: 300px;
+      bottom: 6%;
+      right: -90px;
+      background: rgba(96, 165, 250, 0.24);
+      animation-delay: -4s;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    .app-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .glass {
+      background: linear-gradient(170deg, rgba(18, 40, 64, 0.64), var(--panel));
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 22px 45px rgba(2, 10, 18, 0.42);
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .glass:hover {
+      border-color: rgba(255, 255, 255, 0.26);
+    }
+
+    .section-title {
+      color: #f1f7ff;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.88rem;
+    }
+
+    .content-shell {
+      padding: 1.25rem;
+    }
+
+    .section-heading {
+      margin-bottom: 1.25rem;
+    }
+
+    .stack-grid {
+      gap: 1.1rem;
+    }
+
+    .projects-grid,
+    .cert-grid {
+      gap: 0.9rem;
+    }
+
+    .tagline {
+      color: #8fe9f7;
+      font-weight: 600;
+    }
+
+    .description {
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .chip {
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+      border: 1px solid transparent;
+    }
+
+    .chip:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 14px 22px rgba(2, 10, 18, 0.44);
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(18, 37, 56, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.62rem 0.95rem;
+      transition: transform 0.28s ease, background-color 0.28s ease, box-shadow 0.28s ease;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-3px);
+      background: rgba(24, 56, 86, 0.9);
+      box-shadow: 0 10px 20px rgba(2, 10, 18, 0.5);
+    }
+
+    .social-btn i {
+      color: #8fd3ff;
     }
 
     .skill {
-      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.42rem;
+      padding: 0.45rem 0.2rem;
+      transition: transform 0.28s ease, color 0.28s ease;
+      color: #d3e1ee;
+    }
+
+    .skill p {
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .skill i {
+      filter: drop-shadow(0 6px 8px rgba(6, 12, 18, 0.5));
     }
 
     .skill:hover {
-      transform: scale(1.1);
-      color: #a855f7;
+      transform: translateY(-3px) scale(1.08);
+      color: #ffd8a8;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.7rem;
+      background: linear-gradient(160deg, rgba(16, 38, 61, 0.92), rgba(11, 27, 45, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card p {
+      margin: 0;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(34, 211, 238, 0.55);
+      box-shadow: 0 16px 32px rgba(3, 9, 16, 0.5);
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.22), transparent 48%);
+      pointer-events: none;
+    }
+
+    .project-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid transparent;
+      border-radius: inherit;
+      background: linear-gradient(130deg, rgba(96, 165, 250, 0.45), transparent 40%, rgba(34, 211, 238, 0.34)) border-box;
+      -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+      mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.35;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .project-card:hover::after {
+      opacity: 0.65;
+    }
+
+    .project-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0;
+      font-size: 1.03rem;
+    }
+
+    .project-icon {
+      color: #86e9ff;
+      width: 1.9rem;
+      height: 1.9rem;
+      display: grid;
+      place-items: center;
+      border-radius: 0.55rem;
+      border: 1px solid rgba(147, 197, 253, 0.45);
+      background: rgba(30, 64, 94, 0.6);
+      text-align: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .project-desc {
+      color: #bfccdc;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .project-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.7rem;
+      margin-top: 0.35rem;
+    }
+
+    .stack-pill-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.42rem;
+    }
+
+    .stack-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #bfe8ff;
+      font-size: 0.68rem;
+      border: 1px solid rgba(147, 197, 253, 0.25);
+      line-height: 1;
+    }
+
+    .project-link-hint {
+      color: #8ce8ff;
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .cert {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.7rem;
+      background: linear-gradient(160deg, rgba(18, 39, 60, 0.88), rgba(10, 24, 39, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: 54px;
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    }
+
+    .cert:hover {
+      transform: translateY(-4px);
+      border-color: rgba(34, 211, 238, 0.45);
+      box-shadow: 0 14px 26px rgba(2, 10, 18, 0.46);
+    }
+
+    .cert-badge {
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: #8de8ff;
+      background: rgba(34, 211, 238, 0.14);
+      border: 1px solid rgba(103, 232, 249, 0.35);
+      flex-shrink: 0;
+    }
+
+    .cert-label {
+      font-size: 0.86rem;
+      color: #dfedff;
+      flex: 1;
+      text-align: left;
+      line-height: 1.25;
+    }
+
+    .cert-level {
+      font-size: 0.66rem;
+      padding: 0.2rem 0.42rem;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.2);
+      border: 1px solid rgba(147, 197, 253, 0.32);
+      color: #d7ebff;
+      white-space: nowrap;
+    }
+
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+
+    @keyframes floatBlob {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(20px, -22px, 0) scale(1.08);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        background:
+          radial-gradient(circle at 12% 16%, rgba(34, 211, 238, 0.2), transparent 34%),
+          radial-gradient(circle at 90% 8%, rgba(96, 165, 250, 0.22), transparent 32%),
+          linear-gradient(160deg, var(--bg-deep), var(--bg-mid) 55%, var(--bg-soft));
+      }
+
+      .section-title {
+        letter-spacing: 0.08em;
+      }
+    }
+
+    @media (min-width: 640px) {
+      .content-shell {
+        padding: 1.6rem;
+      }
+
+      .section-heading {
+        margin-bottom: 1.4rem;
+      }
+
+      .stack-grid {
+        gap: 1.3rem;
+      }
+
+      .projects-grid,
+      .cert-grid {
+        gap: 1rem;
+      }
     }
   </style>
 </head>
 
-<body class="bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen px-4 py-5 sm:px-6 sm:py-7">
 
-  <div class="max-w-4xl w-full glass rounded-3xl shadow-2xl p-6 sm:p-10">
+<div class="app-wrap max-w-5xl mx-auto space-y-8 sm:space-y-10">
 
-    <!-- Badge -->
-    <div class="text-center mb-4">
-      <span class="px-4 py-1 text-sm bg-green-500/20 text-green-400 rounded-full">
-        🚀 Available for Internship
-      </span>
-    </div>
+  <!-- HEADER -->
+  <div class="glass reveal rounded-3xl p-6 sm:p-8 text-center" id="hero">
+    <span class="chip inline-block px-4 py-1 bg-emerald-500/15 text-emerald-300 rounded-full text-sm">
+      🚀 Available for Internship
+    </span>
 
-    <!-- Header -->
-    <div class="text-center mb-6" id="header">
-      <h1 class="text-3xl sm:text-4xl font-bold">Badr Eddine Slaoui</h1>
-      <p class="text-purple-400 mt-2">Full Stack Developer (MERN • Laravel • Vue/Nuxt)</p>
-    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold mt-4">Badr Eddine Slaoui</h1>
+    <p class="tagline mt-2">Full Stack Developer</p>
 
-    <!-- Summary -->
-    <p class="text-gray-300 text-center mb-8 max-w-2xl mx-auto">
-      Full Stack Developer building scalable, high-performance applications with MERN, Laravel, and Vue ecosystems.
-      Passionate about clean architecture, microservices, and modern DevOps. Currently exploring GoLang and distributed systems.
+    <p class="description mt-4 max-w-2xl mx-auto">
+      Full-Stack Web Developer specialized in Laravel, PHP, and modern JavaScript ecosystems (MERN, Vue/Nuxt).
+      Experienced in building scalable applications, real-time systems, and structured platforms with strong backend architecture.
     </p>
 
     <!-- Contact -->
-    <div class="grid sm:grid-cols-2 gap-4 mb-8">
-      <a href="mailto:slaoui.badr.eddine.sdv@gmail.com" class="glow text-center bg-gray-800 p-3 rounded-xl transition">
-        📧 slaoui.badr.eddine.sdv@gmail.com
+    <div class="flex flex-wrap justify-center gap-2.5 sm:gap-3 mt-6">
+      <a href="mailto:slaoui.badr.eddine.sdv@gmail.com" class="social-btn rounded-xl">
+        <i class="fa-solid fa-envelope"></i> Email
       </a>
-      <a href="tel:+212713387592" class="glow text-center bg-gray-800 p-3 rounded-xl transition">
-        📞 +212 713 387 592
+      <a href="tel:+212713387592" class="social-btn rounded-xl">
+        <i class="fa-solid fa-phone"></i> Call
       </a>
-    </div>
-
-    <!-- Social -->
-    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-      <a href="https://github.com/Badr-Eddine-Slaoui" target="_blank"
-         class="glow flex items-center justify-center gap-2 bg-gray-800 px-6 py-3 rounded-xl">
-        <i class="fab fa-github text-lg"></i> GitHub
+      <a href="https://github.com/Badr-Eddine-Slaoui" target="_blank" class="social-btn rounded-xl">
+        <i class="fab fa-github"></i> GitHub
       </a>
-
-      <a href="https://linkedin.com/in/badr-eddine-slaoui" target="_blank"
-         class="glow flex items-center justify-center gap-2 bg-blue-600 px-6 py-3 rounded-xl">
+      <a href="https://linkedin.com/in/badr-eddine-slaoui" target="_blank" class="social-btn rounded-xl">
         <i class="fab fa-linkedin"></i> LinkedIn
       </a>
     </div>
 
     <!-- CV -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-      <a href="cv-english.pdf" target="_blank"
-         class="glow text-center px-6 py-3 rounded-xl bg-purple-600 font-semibold">
-        Download CV (EN)
-      </a>
-
-      <a href="cv-french.pdf" target="_blank"
-         class="glow text-center px-6 py-3 rounded-xl bg-pink-600 font-semibold">
-        Télécharger CV (FR)
-      </a>
+    <div class="flex flex-wrap justify-center gap-2.5 sm:gap-3 mt-6">
+      <a href="cv-english.pdf" target="_blank" class="chip bg-cyan-500/20 text-cyan-100 px-5 py-2 rounded-xl">CV EN</a>
+      <a href="cv-french.pdf" target="_blank" class="chip bg-blue-500/20 text-blue-100 px-5 py-2 rounded-xl">CV FR</a>
     </div>
-
-    <!-- Skills -->
-    <div>
-      <h2 class="text-xl font-semibold text-center mb-6">Tech Stack</h2>
-
-      <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-6 text-center text-2xl">
-
-        <i class="devicon-html5-plain skill"></i>
-        <i class="devicon-css3-plain skill"></i>
-        <i class="devicon-javascript-plain skill"></i>
-        <i class="devicon-typescript-plain skill"></i>
-        <i class="devicon-react-original skill"></i>
-        <i class="devicon-vuejs-plain skill"></i>
-        <i class="devicon-nuxtjs-plain skill"></i>
-        <i class="devicon-nodejs-plain skill"></i>
-        <i class="devicon-express-original skill"></i>
-        <i class="devicon-laravel-plain skill"></i>
-        <i class="devicon-php-plain skill"></i>
-        <i class="devicon-mysql-plain skill"></i>
-        <i class="devicon-postgresql-plain skill"></i>
-        <i class="devicon-mongodb-plain skill"></i>
-        <i class="devicon-docker-plain skill"></i>
-        <i class="devicon-amazonwebservices-plain-wordmark skill"></i>
-        <i class="devicon-git-plain skill"></i>
-        <i class="devicon-github-original skill"></i>
-        <i class="devicon-linux-plain skill"></i>
-        <i class="devicon-nginx-original skill"></i>
-        <i class="devicon-go-plain skill"></i>
-        <i class="devicon-python-plain skill"></i>
-        <i class="devicon-java-plain skill"></i>
-        <i class="devicon-c-plain skill"></i>
-        <i class="devicon-cplusplus-plain skill"></i>
-
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <p class="text-center text-gray-500 text-sm mt-10">
-      © 2026 Badr Eddine Slaoui
-    </p>
-
   </div>
 
-  <!-- GSAP Animations -->
-  <script>
-    gsap.from("#header, i, a, p", {
-      y: -40,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out"
-    });
-  </script>
+  <!-- SKILLS -->
+  <div class="glass reveal rounded-3xl content-shell">
+    <h2 class="section-title text-center section-heading">Tech Stack</h2>
+
+    <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 stack-grid text-center text-xs">
+      <div class="skill"><i class="devicon-html5-plain text-2xl"></i><p>HTML</p></div>
+      <div class="skill"><i class="devicon-css3-plain text-2xl"></i><p>CSS</p></div>
+      <div class="skill"><i class="devicon-javascript-plain text-2xl"></i><p>JS</p></div>
+      <div class="skill"><i class="devicon-typescript-plain text-2xl"></i><p>TS</p></div>
+      <div class="skill"><i class="devicon-react-original text-2xl"></i><p>React</p></div>
+      <div class="skill"><i class="devicon-vuejs-plain text-2xl"></i><p>Vue</p></div>
+      <div class="skill"><i class="devicon-nuxtjs-plain text-2xl"></i><p>Nuxt</p></div>
+      <div class="skill"><i class="devicon-nodejs-plain text-2xl"></i><p>Node</p></div>
+      <div class="skill"><i class="devicon-express-original text-2xl"></i><p>Express</p></div>
+      <div class="skill"><i class="devicon-laravel-plain text-2xl"></i><p>Laravel</p></div>
+      <div class="skill"><i class="devicon-php-plain text-2xl"></i><p>PHP</p></div>
+      <div class="skill"><i class="devicon-mysql-plain text-2xl"></i><p>MySQL</p></div>
+      <div class="skill"><i class="devicon-postgresql-plain text-2xl"></i><p>PostgreSQL</p></div>
+      <div class="skill"><i class="devicon-mongodb-plain text-2xl"></i><p>MongoDB</p></div>
+      <div class="skill"><i class="devicon-docker-plain text-2xl"></i><p>Docker</p></div>
+      <div class="skill"><i class="devicon-amazonwebservices-plain-wordmark text-2xl"></i><p>AWS</p></div>
+      <div class="skill"><i class="devicon-git-plain text-2xl"></i><p>Git</p></div>
+      <div class="skill"><i class="devicon-github-original text-2xl"></i><p>GitHub</p></div>
+      <div class="skill"><i class="devicon-linux-plain text-2xl"></i><p>Linux</p></div>
+      <div class="skill"><i class="devicon-nginx-original text-2xl"></i><p>Nginx</p></div>
+      <div class="skill"><i class="devicon-go-plain text-2xl"></i><p>Go</p></div>
+      <div class="skill"><i class="devicon-python-plain text-2xl"></i><p>Python</p></div>
+      <div class="skill"><i class="devicon-java-plain text-2xl"></i><p>Java</p></div>
+      <div class="skill"><i class="devicon-c-plain text-2xl"></i><p>C</p></div>
+      <div class="skill"><i class="devicon-cplusplus-plain text-2xl"></i><p>C++</p></div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="glass reveal rounded-3xl content-shell">
+    <h2 class="section-title text-center section-heading">Projects</h2>
+
+    <div class="grid md:grid-cols-2 projects-grid">
+
+      <a href="https://github.com/Badr-Eddine-Slaoui/FireCamp" target="_blank" class="card project-card p-4 rounded-xl min-h-[132px]">
+        <h3 class="font-semibold project-title"><i class="fa-solid fa-fire project-icon"></i>FireCamp</h3>
+        <p class="project-desc">Real-time social platform with posts, interactions, and live updates for communities.</p>
+        <div class="project-foot">
+          <div class="stack-pill-wrap">
+            <span class="stack-pill">MongoDB</span>
+            <span class="stack-pill">Express</span>
+            <span class="stack-pill">React</span>
+          </div>
+          <span class="project-link-hint">View Project</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/Badr-Eddine-Slaoui/PixelQuest" target="_blank" class="card project-card p-4 rounded-xl min-h-[132px]">
+        <h3 class="font-semibold project-title"><i class="fa-solid fa-bolt project-icon"></i>PixelQuest</h3>
+        <p class="project-desc">Single-page web app powered by a custom framework and integrated intelligent scraping flows.</p>
+        <div class="project-foot">
+          <div class="stack-pill-wrap">
+            <span class="stack-pill">JavaScript</span>
+            <span class="stack-pill">SPA</span>
+            <span class="stack-pill">Scraping</span>
+          </div>
+          <span class="project-link-hint">View Project</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/Badr-Eddine-Slaoui/Mavel" target="_blank" class="card project-card p-4 rounded-xl min-h-[132px]">
+        <h3 class="font-semibold project-title"><i class="fa-solid fa-brain project-icon"></i>Mavel</h3>
+        <p class="project-desc">Hand-crafted PHP MVC framework focused on clean routing, service layers, and scalability.</p>
+        <div class="project-foot">
+          <div class="stack-pill-wrap">
+            <span class="stack-pill">PHP</span>
+            <span class="stack-pill">MVC</span>
+            <span class="stack-pill">Architecture</span>
+          </div>
+          <span class="project-link-hint">View Project</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/Badr-Eddine-Slaoui/HardPlon" target="_blank" class="card project-card p-4 rounded-xl min-h-[132px]">
+        <h3 class="font-semibold project-title"><i class="fa-solid fa-chart-column project-icon"></i>HardPlon</h3>
+        <p class="project-desc">Structured learning tracker with progress analytics, milestones, and performance visualization.</p>
+        <div class="project-foot">
+          <div class="stack-pill-wrap">
+            <span class="stack-pill">Laravel</span>
+            <span class="stack-pill">MySQL</span>
+            <span class="stack-pill">Analytics</span>
+          </div>
+          <span class="project-link-hint">View Project</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CERTIFICATES -->
+  <div class="glass reveal rounded-3xl content-shell">
+    <h2 class="section-title text-center section-heading">Certificates</h2>
+
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 cert-grid text-center">
+
+      <a href="https://cert.efset.org/8G1r5N" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-solid fa-award"></i></span>
+        <span class="cert-label">EF SET C1</span>
+        <span class="cert-level">C1</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/9157ab46a1f1" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-solid fa-server"></i></span>
+        <span class="cert-label">Node.js Certification</span>
+        <span class="cert-level">Basic</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/6dca3aabbc76" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-brands fa-java"></i></span>
+        <span class="cert-label">Java Certification</span>
+        <span class="cert-level">Basic</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/2f87f3f3728a" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-brands fa-react"></i></span>
+        <span class="cert-label">React Certification</span>
+        <span class="cert-level">Basic</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/3a883e4626f5" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-solid fa-diagram-project"></i></span>
+        <span class="cert-label">REST API Certification</span>
+        <span class="cert-level">Interm.</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/dad983a83fa3" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-solid fa-database"></i></span>
+        <span class="cert-label">SQL Certification</span>
+        <span class="cert-level">Advanced</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/b499b70c263a" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-solid fa-database"></i></span>
+        <span class="cert-label">SQL Certification</span>
+        <span class="cert-level">Interm.</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/823858e6d61b" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-solid fa-database"></i></span>
+        <span class="cert-label">SQL Certification</span>
+        <span class="cert-level">Basic</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/65a33149166b" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-brands fa-js"></i></span>
+        <span class="cert-label">JavaScript Certification</span>
+        <span class="cert-level">Interm.</span>
+      </a>
+      <a href="https://www.hackerrank.com/certificates/72cf2aad10fb" target="_blank" class="cert p-3 rounded-xl">
+        <span class="cert-badge"><i class="fa-brands fa-js"></i></span>
+        <span class="cert-label">JavaScript Certification</span>
+        <span class="cert-level">Basic</span>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!reduceMotion) {
+    const revealSections = gsap.utils
+      .toArray(".reveal")
+      .filter((section) => section.id !== "hero");
+
+    gsap.set(revealSections, { autoAlpha: 0, y: 16 });
+
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+    tl.from("#hero", {
+      autoAlpha: 0,
+      y: 24,
+      duration: 0.75,
+      clearProps: "opacity,visibility,transform"
+    })
+      .from("#hero .social-btn", {
+        autoAlpha: 0,
+        y: 10,
+        stagger: 0.06,
+        duration: 0.3,
+        clearProps: "opacity,visibility,transform"
+      }, "-=0.35")
+      .from("#hero .chip", {
+        autoAlpha: 0,
+        y: 8,
+        stagger: 0.05,
+        duration: 0.28,
+        clearProps: "opacity,visibility,transform"
+      }, "-=0.2")
+      .to(revealSections, {
+        autoAlpha: 1,
+        y: 0,
+        stagger: 0.12,
+        duration: 0.55,
+        ease: "power2.out",
+        clearProps: "opacity,visibility,transform"
+      }, "-=0.12")
+      .from(".skill", {
+        autoAlpha: 0,
+        y: 12,
+        stagger: 0.018,
+        duration: 0.28,
+        clearProps: "opacity,visibility,transform"
+      }, "-=0.2")
+      .from(".card", {
+        autoAlpha: 0,
+        y: 14,
+        stagger: 0.06,
+        duration: 0.35,
+        clearProps: "opacity,visibility,transform"
+      }, "-=0.18");
+  }
+
+</script>
 
 </body>
 </html>
